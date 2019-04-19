@@ -200,7 +200,7 @@ class PcManager():
         body = {
             "length": 15000,
             "offset": 0,
-            "filter": ""
+            "filter": "vm_name==AT-.*"
         }
         self.rest_params_init(sub_url="vms/list", method="POST", body=body)
         return self.rest_call()
