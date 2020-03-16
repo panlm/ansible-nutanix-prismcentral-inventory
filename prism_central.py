@@ -501,14 +501,24 @@ class PrismCentralInventory(object):
 
             self.add_host(vm['status']['name'], dest)
 
-            ## groups that are always present
-            for group in (['prism_central',
-                           'cluster_' + vm['status']['cluster_reference']['name'].lower(),
-                           'project_' + vm['metadata']['project_reference']['name'].lower(),
-                           'owner_' + vm['metadata']['owner_reference']['name'].lower(),
-                           'hypervisor_' + vm['status']['resources']['hypervisor_type'].lower(),
-                           'status_' + vm['status']['resources']['power_state'].lower()]):
-                self.add_host(group, dest)
+            ## will get some vm without project_reference/owner_reference in metadata
+            try:
+                ## groups that are always present
+                for group in (['prism_central',
+                               'cluster_' + vm['status']['cluster_reference']['name'].lower(),
+                               'project_' + vm['metadata']['project_reference']['name'].lower(),
+                               'owner_' + vm['metadata']['owner_reference']['name'].lower(),
+                               'hypervisor_' + vm['status']['resources']['hypervisor_type'].lower(),
+                               'status_' + vm['status']['resources']['power_state'].lower()]):
+                    self.add_host(group, dest)
+            except KeyError:
+                for group in (['prism_central',
+                               'cluster_' + vm['status']['cluster_reference']['name'].lower(),
+                               'project_' + '',
+                               'owner_' + '',
+                               'hypervisor_' + vm['status']['resources']['hypervisor_type'].lower(),
+                               'status_' + vm['status']['resources']['power_state'].lower()]):
+                    self.add_host(group, dest)
    
             ## groups that are not always present
             for group in (vm['metadata']['categories']):
